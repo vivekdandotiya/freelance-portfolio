@@ -1,11 +1,45 @@
-import React from 'react';
-export default function ProjectCard({ project }){
+import React from "react";
+import ElectricBorder from "./ElectricBorder";
+
+export default function ProjectCard({ project }) {
   return (
-    <div style={{ border:'1px solid #ddd', borderRadius:8, padding:12 }}>
-      {project.images?.[0] && <img src={project.images[0].url} alt="" style={{ height:160, width:'100%', objectFit:'cover', borderRadius:6 }} />}
-      <h3>{project.title}</h3>
-      <p>{(project.description||'').slice(0,120)}</p>
-      {project.figmaUrl && <a href={project.figmaUrl} target="_blank" rel="noreferrer">Open Figma</a>}
-    </div>
+    <ElectricBorder
+      color="#8b5cf6"
+      speed={1.2}
+      chaos={1}
+      thickness={2}
+      style={{ borderRadius: 10 }}
+    >
+      <div style={{ padding: 14 }}>
+        {project.images && (
+  <img
+    src={project.images}
+    alt={project.title}
+    style={{
+      width: "100%",
+      height: 160,
+      objectFit: "cover",
+      borderRadius: 8,
+    }}
+  />
+)}
+
+        <h3>{project.title}</h3>
+
+        <p style={{ fontSize: 14 }}>
+          {(project.description || "").slice(0, 120)}
+        </p>
+
+        {project.figmaUrl && (
+          <a
+            href={project.figmaUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open Figma →
+          </a>
+        )}
+      </div>
+    </ElectricBorder>
   );
 }
