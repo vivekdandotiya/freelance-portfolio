@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 
 import Home from "./pages/home";
 import About from "./pages/About";
-import Projects from "./pages/project";
+import Project from "./pages/Project";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
@@ -45,7 +45,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects" element={<Project />} />
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
