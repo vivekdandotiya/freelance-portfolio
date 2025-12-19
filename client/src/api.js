@@ -1,12 +1,13 @@
 // client/src/api.js
 
-// Base API URL – .env me VITE_API_URL set kiya hai
-// Example: VITE_API_URL="https://freelance-portfolio-ys7f.onrender.com/api"
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// Base API URL
+// .env example:
+// VITE_API_URL=http://localhost:5000/api
+const API =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-/* -------------------------------- Projects -------------------------------- */
+/* ============================== PROJECTS ============================== */
 
-// Home page + Projects page ke liye
 export async function getProjects() {
   try {
     const res = await fetch(`${API}/projects`);
@@ -18,28 +19,23 @@ export async function getProjects() {
   }
 }
 
-// Kuch purane code me fetchProjects use ho raha tha
-// isliye alias bana diya – dono same kaam karenge
+// alias (old code support)
 export async function fetchProjects() {
   return getProjects();
 }
 
-// Optional: Sirf 3 recent projects (Home page "Recent Projects" section)
 export async function getRecentProjects(limit = 3) {
   const projects = await getProjects();
   return projects.slice(0, limit);
 }
 
-// 🔥 NEW: Purane code ke liye alias
-// Home.jsx me agar import { getProjectsHome } from "../api"; likha hai
-// to ye function wahi data dega jo getRecentProjects deta hai
+// alias (Home.jsx support)
 export async function getProjectsHome(limit = 3) {
   return getRecentProjects(limit);
 }
 
-/* --------------------------------- Leads ---------------------------------- */
+/* ================================ LEADS ================================ */
 
-// Naya lead / contact form submit
 export async function submitLead(data) {
   try {
     const res = await fetch(`${API}/leads`, {
@@ -48,58 +44,29 @@ export async function submitLead(data) {
       body: JSON.stringify(data),
     });
 
+    const result = await res.json();
+
     if (!res.ok) {
-      const errBody = await res.json().catch(() => ({}));
-      throw new Error(errBody.message || "Failed to submit lead");
+      throw new Error(result.message || "Failed to submit lead");
     }
 
-    return await res.json();
+    return result;
   } catch (err) {
     console.error("submitLead error:", err);
     throw err;
   }
 }
 
-// Purane code me createLead naam use ho raha tha
-// Contact.jsx me import { createLead } from "../api";
-// isliye yaha alias bana diya
+// alias (Contact.jsx support)
 export async function createLead(data) {
   return submitLead(data);
 }
 
-/* --------------------------------- Auth ----------------------------------- */
-/*
-  Agar tumne backend me /api/auth/login & /api/auth/register
-  banaya hai to ye helpers use kar sakte ho.
-
-  Abhi optional hain – use karna ho to Login / Signup pages me
-  import karke call kar lena.
-*/
-
-export async function loginUser(credentials) {
-  try {
-    const res = await fetch(`${API}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Login failed");
-    }
-
-    return data; // { token, user }
-  } catch (err) {
-    console.error("loginUser error:", err);
-    throw err;
-  }
-}
+/* ================================ AUTH ================================= */
 
 export async function signupUser(payload) {
   try {
-    const res = await fetch(`${API}/auth/register`, {
+    const res = await fetch(`${API}/auth/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -108,17 +75,31 @@ export async function signupUser(payload) {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || "Signup failed");
+      throw new Error(data.msg || "Signup failed");
     }
 
-    return data;
+    return data; // { msg: "Signup successful" }
   } catch (err) {
     console.error("signupUser error:", err);
     throw err;
   }
 }
 
-// Default export – optional, agar kahin use karna ho
+export async function loginUser(credentials) {
+  const res = await fetch(`${API}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Login failed");
+  return data;
+}
+
+
+/* ============================ DEFAULT EXPORT =========================== */
+
 export default {
   getProjects,
   fetchProjects,
@@ -126,6 +107,6 @@ export default {
   getProjectsHome,
   submitLead,
   createLead,
-  loginUser,
   signupUser,
+  loginUser,
 };

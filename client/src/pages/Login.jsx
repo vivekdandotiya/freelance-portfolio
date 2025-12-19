@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../api";
+import { loginUser } from "../api.js";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [status, setStatus] = useState({ loading: false, error: "" });
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [status, setStatus] = useState({
+    loading: false,
+    error: "",
+  });
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -14,17 +22,22 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    console.log("LOGIN SUBMIT CLICKED", form);
+
     setStatus({ loading: true, error: "" });
+
     try {
-      const res = await api.post("/auth/login", form);
-      const token = res.data?.token;
-      if (token) localStorage.setItem("token", token);
-      navigate("/admin");
+      const data = await loginUser(form); // ✅ CORRECT
+      console.log("LOGIN SUCCESS:", data);
+
+      // optional: save token
+      localStorage.setItem("token", data.token);
+
+      navigate("/admin"); // or dashboard page
     } catch (err) {
-      console.error(err);
       setStatus({
         loading: false,
-        error: "Invalid credentials or server error.",
+        error: err.message || "Invalid credentials",
       });
     }
   }
@@ -32,12 +45,11 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[#050816] flex items-center justify-center px-4">
       <div className="relative max-w-md w-full">
-        <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-violet-500/30 to-sky-500/10 blur-xl" />
+        <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-violet-500/25 to-emerald-500/15 blur-xl" />
         <div className="relative rounded-3xl border border-white/10 bg-[#0b1020] px-6 py-8 shadow-xl">
-          <h1 className="text-xl font-semibold text-white mb-1">Admin Login</h1>
-          <p className="text-xs text-gray-400 mb-6">
-            Use this to access your leads &amp; projects dashboard.
-          </p>
+          <h1 className="text-xl font-semibold text-white mb-1">
+            Admin Login
+          </h1>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-sm">
             <div>
@@ -50,9 +62,10 @@ export default function Login() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full rounded-lg bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-violet-400"
+                className="w-full rounded-lg bg-black/40 border border-white/10 px-3 py-2 outline-none"
               />
             </div>
+
             <div>
               <label className="block text-xs text-gray-300 mb-1">
                 Password
@@ -63,7 +76,7 @@ export default function Login() {
                 value={form.password}
                 onChange={handleChange}
                 required
-                className="w-full rounded-lg bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-violet-400"
+                className="w-full rounded-lg bg-black/40 border border-white/10 px-3 py-2 outline-none"
               />
             </div>
 
@@ -74,18 +87,15 @@ export default function Login() {
             <button
               type="submit"
               disabled={status.loading}
-              className="w-full rounded-full bg-violet-500 py-2 text-sm font-semibold text-black shadow-md shadow-violet-500/40 hover:bg-violet-400 disabled:opacity-60 disabled:cursor-not-allowed transition-transform hover:-translate-y-0.5"
+              className="w-full rounded-full bg-violet-500 py-2 text-sm font-semibold text-black"
             >
               {status.loading ? "Logging in…" : "Login"}
             </button>
           </form>
 
           <p className="mt-4 text-[11px] text-gray-400 text-center">
-            Don&apos;t have an account?{" "}
-            <Link
-              to="/signup"
-              className="text-violet-300 hover:text-violet-200 font-medium"
-            >
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-violet-300">
               Sign up
             </Link>
           </p>
