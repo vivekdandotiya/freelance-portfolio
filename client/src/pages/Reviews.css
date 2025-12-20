@@ -4,27 +4,31 @@
   position: relative;
   min-height: 100vh;
   padding: 5rem 1.5rem 4rem;
-  background: radial-gradient(circle at top, #191932 0, #050610 50%, #020208 100%);
-  color: #f9f5ff;
+  /* Deep black gradient for depth */
+  background: radial-gradient(circle at top, #1a1a1a 0, #050505 50%, #000000 100%);
+  color: #ffffff;
   overflow: hidden;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  /* Camera perspective for 3D transforms */
+  perspective: 1000px;
 }
 
 .reviews-container {
   max-width: 1120px;
   margin: 0 auto;
+  transform-style: preserve-3d;
 }
 
-/* background glow */
+/* background glow - white/silver mist */
 .reviews-bg-glow {
   position: absolute;
   inset: -20%;
   background:
-    radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.18), transparent 55%),
-    radial-gradient(circle at 80% 10%, rgba(56, 189, 248, 0.16), transparent 55%),
-    radial-gradient(circle at 50% 80%, rgba(37, 99, 235, 0.2), transparent 60%);
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.05), transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.03), transparent 55%),
+    radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.04), transparent 60%);
   opacity: 0.9;
-  filter: blur(4px);
+  filter: blur(60px);
   pointer-events: none;
   z-index: 0;
 }
@@ -47,10 +51,10 @@
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #a5b4fc;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(129, 140, 248, 0.4);
-  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.6), 0 18px 45px rgba(15, 23, 42, 0.9);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .reviews-title {
@@ -61,17 +65,17 @@
 }
 
 .reviews-title span:first-child {
-  color: #e5e7eb;
+  color: #ffffff;
 }
 
 .reviews-title span:last-child {
-  color: #a855f7;
+  color: #888888; /* Silver/Gray accent */
 }
 
 .reviews-subtitle {
   margin-top: 0.9rem;
   max-width: 600px;
-  color: #cbd5f5;
+  color: #a1a1a1;
   font-size: 0.95rem;
 }
 
@@ -84,40 +88,48 @@
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1.4rem;
   margin-bottom: 3rem;
+  transform-style: preserve-3d;
 }
 
 .stat-card {
   padding: 1.4rem 1.3rem;
   border-radius: 1.3rem;
-  background: radial-gradient(circle at top left, rgba(148, 163, 253, 0.18), rgba(15, 23, 42, 0.95));
-  border: 1px solid rgba(148, 163, 253, 0.4);
-  box-shadow: 0 22px 40px rgba(15, 23, 42, 0.85);
+  /* Darker gradient with top-edge light highlight */
+  background: linear-gradient(145deg, #181818, #0a0a0a);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* 3D shadows: inset light top, deep shadow bottom */
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 15px 35px rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(18px);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(129, 140, 248, 0.9);
-  box-shadow: 0 28px 55px rgba(15, 23, 42, 0.95);
+  /* Elevates the card and tilts it on X axis */
+  transform: translateY(-8px) translateZ(20px) rotateX(4deg);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 30px 60px rgba(0, 0, 0, 0.9);
 }
 
 .stat-value {
   font-size: 1.9rem;
   font-weight: 800;
-  color: #fef9ff;
+  color: #ffffff;
 }
 
 .stat-label {
   margin-top: 0.3rem;
   font-size: 0.9rem;
-  color: #cbd5f5;
+  color: #a1a1a1;
 }
 
 .stat-note {
   margin-top: 0.5rem;
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: #666666;
 }
 
 /* TIMELINE */
@@ -131,20 +143,22 @@
 .section-heading h2 {
   font-size: 1.25rem;
   font-weight: 700;
+  color: #ffffff;
 }
 
 .section-heading p {
   margin-top: 0.3rem;
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: #666666;
 }
 
 .timeline-list {
   margin-top: 1.4rem;
   border-radius: 1.5rem;
   padding: 1.3rem 1.4rem;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(55, 65, 81, 0.9);
+  background: rgba(10, 10, 10, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .timeline-item {
@@ -155,17 +169,14 @@
   padding-bottom: 1.3rem;
 }
 
-.timeline-item:last-child {
-  padding-bottom: 0;
-}
-
 .timeline-dot {
   margin-top: 0.6rem;
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: #a855f7;
-  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.35);
+  background: #ffffff;
+  /* Diamond glow effect */
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
 }
 
 .timeline-line {
@@ -173,7 +184,7 @@
   grid-row: 1 / span 2;
   margin-left: 4px;
   width: 1px;
-  background: linear-gradient(to bottom, rgba(148, 163, 253, 0.7), transparent);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
 }
 
 .timeline-card {
@@ -182,7 +193,7 @@
 
 .timeline-year {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: #666666;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -191,18 +202,19 @@
   margin-top: 0.15rem;
   font-size: 1rem;
   font-weight: 600;
+  color: #ffffff;
 }
 
 .timeline-type {
   margin-top: 0.2rem;
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: #888888;
 }
 
 .timeline-result {
   margin-top: 0.35rem;
   font-size: 0.85rem;
-  color: #d1d5db;
+  color: #a1a1a1;
 }
 
 /* REVIEWS GRID */
@@ -210,6 +222,7 @@
 .reviews-testimonials {
   position: relative;
   z-index: 1;
+  perspective: 1200px;
 }
 
 .review-grid {
@@ -217,15 +230,22 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.3rem;
+  transform-style: preserve-3d;
 }
 
 .review-card {
   padding: 1.4rem 1.3rem;
   border-radius: 1.4rem;
-  background: radial-gradient(circle at top left, rgba(244, 114, 182, 0.18), rgba(17, 24, 39, 0.98));
-  border: 1px solid rgba(248, 250, 252, 0.05);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+  /* Frosted black glass */
+  background: linear-gradient(135deg, rgba(25, 25, 25, 0.9), rgba(10, 10, 10, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(16px);
+  transition: transform 0.4s ease;
+}
+
+.review-card:hover {
+  transform: translateZ(30px) rotateY(-2deg);
 }
 
 .review-header {
@@ -238,28 +258,32 @@
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #a855f7, #ec4899);
+  /* High contrast grayscale gradient */
+  background: linear-gradient(135deg, #ffffff, #444444);
+  color: #000000;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .review-name {
   font-size: 0.95rem;
   font-weight: 600;
+  color: #ffffff;
 }
 
 .review-role {
   font-size: 0.8rem;
-  color: #d4d4d8;
+  color: #888888;
 }
 
 .review-comment {
   margin-top: 0.7rem;
   font-size: 0.9rem;
-  color: #e5e7eb;
+  color: #d1d1d1;
 }
 
 .review-rating {
@@ -268,55 +292,47 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.8rem;
-  color: #facc15;
+  color: #ffffff; /* White stars */
 }
 
 .review-rating-text {
   margin-left: 0.25rem;
   font-size: 0.75rem;
-  color: #e5e7eb;
+  color: #666666;
 }
 
-/* Simple animations (same style as Home) */
+/* Simple animations */
 
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(18px) translateZ(-50px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
   }
 }
 
 .fade-in-up {
   opacity: 0;
-  animation: fadeUp 0.7s ease-out forwards;
+  animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-.delay-1 {
-  animation-delay: 0.1s;
-}
-.delay-2 {
-  animation-delay: 0.22s;
-}
-.delay-3 {
-  animation-delay: 0.34s;
-}
-.delay-4 {
-  animation-delay: 0.46s;
-}
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.22s; }
+.delay-3 { animation-delay: 0.34s; }
+.delay-4 { animation-delay: 0.46s; }
 
-/* hover bounce */
+/* hover bounce updated for 3D */
 
 .hover-bounce {
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  transition: all 0.3s ease;
 }
 
 .hover-bounce:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.96);
+  transform: translateY(-5px) scale(1.02) translateZ(10px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
 }
 
 /* responsive tweaks */

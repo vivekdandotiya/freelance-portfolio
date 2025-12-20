@@ -21,7 +21,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-50">
       {/* Top glass nav */}
-      <div className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
+      
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 text-sm font-semibold shadow-lg shadow-purple-500/40">
@@ -37,9 +37,13 @@ export default function App() {
             </div>
           </div>
 
-          <Navbar activePath={location.pathname} />
+          <Navbar
+  key={location.pathname}
+  activePath={location.pathname}
+/>
+
         </div>
-      </div>
+      
 
       {/* Pages */}
       <Routes>

@@ -49,7 +49,7 @@ export default function Signup() {
             Create Account
           </h1>
           <p className="text-xs text-gray-400 mb-6">
-            Create an admin account to manage projects and leads.
+            Create an  account to manage projects and leads.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-sm">

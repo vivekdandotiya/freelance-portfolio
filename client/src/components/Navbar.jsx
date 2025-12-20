@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 export default function Navbar({ activePath }) {
   const [isOpen, setIsOpen] = useState(false);
+  const isLoggedIn = !!localStorage.getItem("token");
 
   return (
     <>
@@ -191,12 +192,7 @@ export default function Navbar({ activePath }) {
             >
               Record's
             </Link>
-            <Link
-              to="https://vivekdandotiya.github.io/portfolio./"
-              className="nav-link text-sm font-medium text-gray-300 hover:text-white transition-all"
-            >
-              Portfolio
-            </Link>
+            
           </div>
 
           {/* Right - CTA Buttons */}
@@ -207,12 +203,15 @@ export default function Navbar({ activePath }) {
             >
               Contact
             </Link>
-            <Link
-              to="/signup"
-              className="cta-button px-6 py-2 rounded-lg text-sm font-medium text-black bg-white hover:bg-gray-200 shadow-lg shadow-white/20 flex items-center justify-center"
-            >
-              Get Started
-            </Link>
+            {!isLoggedIn && (
+  <Link
+    to="/signup"
+    className="cta-button px-6 py-2 rounded-lg text-sm font-medium text-black bg-white hover:bg-gray-200 shadow-lg shadow-white/20 flex items-center justify-center"
+  >
+    Get Started
+  </Link>
+)}
+
           </div>
 
           {/* Mobile Menu Button */}
@@ -264,13 +263,7 @@ export default function Navbar({ activePath }) {
               >
                 Record's
               </Link>
-              <Link
-                to="https://vivekdandotiya.github.io/portfolio./"
-                onClick={() => setIsOpen(false)}
-                className="block text-sm font-medium text-gray-300 hover:text-white transition-all"
-              >
-                Portfolio
-              </Link>
+              
               <div className="pt-4 flex flex-col gap-3">
                 <Link
                   to="/contact"
@@ -279,13 +272,17 @@ export default function Navbar({ activePath }) {
                 >
                   Contact
                 </Link>
-                <Link
-                  to="/signup"
-                  onClick={() => setIsOpen(false)}
-                  className="w-full px-6 py-2 rounded-lg text-sm font-medium text-black bg-white hover:bg-gray-200 text-center"
-                >
-                  Get Started
-                </Link>
+                {!isLoggedIn && (
+  <Link
+    to="/signup"
+    onClick={() => setIsOpen(false)}
+    className="w-full px-6 py-2 rounded-lg text-sm font-medium text-black bg-white hover:bg-gray-200 text-center"
+  >
+    Get Started
+  </Link>
+)}
+
+
               </div>
             </div>
           </div>

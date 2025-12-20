@@ -431,9 +431,7 @@ function Navbar() {
             <a href="/reviews" className="nav-link" style={{ fontSize: '0.875rem', fontWeight: 500, color: 'white', textDecoration: 'none' }}>
               Record's
             </a>
-            <a href="https://vivekdandotiya.github.io/portfolio./" className="nav-link" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', textDecoration: 'none' }}>
-              Portfolio
-            </a>
+            
           </div>
 
           {/* Right - CTA Buttons */}
@@ -463,9 +461,7 @@ function Navbar() {
               <a href="/" onClick={() => setIsOpen(false)} style={{ fontSize: '0.875rem', fontWeight: 500, color: 'white', textDecoration: 'none' }}>
                 Home
               </a>
-              <a href="/projects" onClick={() => setIsOpen(false)} style={{ fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', textDecoration: 'none' }}>
-                Portfolio
-              </a>
+              
               <a href="/services" onClick={() => setIsOpen(false)} style={{ fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', textDecoration: 'none' }}>
                 Services
               </a>
@@ -788,18 +784,20 @@ export default function Home() {
               lineHeight: 1.4,
               marginBottom: "1.5rem",
               minHeight: "180px",
+              
             }}
           >
             <TextType 
-              texts={[
-                "I design & build revenue-focused\nwebsites.",
-                "I create amazing user experiences\nfor businesses.",
-                "I develop modern\n\web applications\nthat scale."
-              ]} 
-              typingSpeed={80}
-              deletingSpeed={40}
-              pauseDuration={2000}
-            />
+  texts={[
+    "Designing & building websites.",
+    "Creating amazing user experiences.",
+    "Developing modern web pages."
+  ]}
+  typingSpeed={80}
+  deletingSpeed={40}
+  pauseDuration={2000}
+/>
+
           </h1>
 
           <p

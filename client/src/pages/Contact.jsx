@@ -849,33 +849,88 @@ const ContactPage = () => {
         <div className="footer-content">
           <div className="footer-grid">
             <div className="footer-section">
-              <h3 className="footer-section-title">Get in touch</h3>
-              <a href="mailto:hello@example.com" className="footer-email">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                hello@example.com
-              </a>
+              <div className="footer-section">
+  <h3 className="footer-section-title">Get in touch</h3>
+
+  {/* First Email */}
+  <a href="mailto:hparihar2005@gmail.com" className="footer-email">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+      />
+    </svg>
+    hparihar2005@gmail.com
+  </a>
+
+  {/* Second Email */}
+  <a
+    href="mailto:vivekdandotiya772@gmail.com"
+    className="footer-email"
+    style={{ marginTop: "0.5rem" }}
+  >
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z"
+      />
+    </svg>
+    vivekdandotiya772@gmail.com
+  </a>
+</div>
+
             </div>
-            <div className="footer-section">
-              <h3 className="footer-section-title">Follow</h3>
-              <div className="footer-social">
-                {[
-                  { name: "Twitter", href: "#" },
-                  { name: "Dribbble", href: "#" },
-                  { name: "LinkedIn", href: "#" },
-                ].map((social) => (
-                  <a key={social.name} href={social.href} className="footer-social-link">
-                    {social.name}
-                  </a>
-                ))}
-              </div>
-            </div>
+            <div className="footer-grid">
+  {/* CONTACT NUMBERS */}
+  <div className="footer-section">
+    <h3 className="footer-section-title">Contact</h3>
+
+    <a href="tel:9906232302" className="footer-email">
+      +91 99062 32302
+    </a>
+
+    <a
+      href="tel:7999617228"
+      className="footer-email"
+      style={{ marginTop: "0.5rem" }}
+    >
+      +91 79996 17228
+    </a>
+  </div>
+
+  {/* LINKEDIN */}
+  <div className="footer-section">
+    <h3 className="footer-section-title">LinkedIn</h3>
+
+    <div
+      className="footer-social"
+      style={{ flexDirection: "column", alignItems: "flex-start" }}
+    >
+      <a
+        href="https://www.linkedin.com/in/hrithik-parihar-b313032a2"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="footer-social-link"
+      >
+        Hrithik Parihar
+      </a>
+
+      <a
+        href="https://www.linkedin.com/in/vivek772/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="footer-social-link"
+      >
+        Vivek Dandotiya
+      </a>
+    </div>
+  </div>
+</div>
+
           </div>
           <div className="footer-bottom">
             <p>© 2025 Designer Studio. All rights reserved.</p>

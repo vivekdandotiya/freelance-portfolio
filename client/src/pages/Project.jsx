@@ -222,7 +222,7 @@ function ProjectCard({ project, index }) {
                   e.target.style.boxShadow = "none";
                 }}
               >
-                View Live →
+                
               </a>
             )}
             {project.figmaUrl && (
@@ -271,52 +271,43 @@ export default function Project() {
       title: "Portfolio Website",
       category: "Web Design",
       description: "Modern portfolio website with smooth animations, clean UI, and responsive design. Built with React and Tailwind CSS for optimal performance.",
-      image: "/images/project1.png",
-      video: "/videos/project2.mp4", // Replace with your video
+      image: "/images/portfolio.png",
+      video: "/videos/portfolio.mp4", // Replace with your video
       tech: ["React", "Tailwind CSS", "Framer Motion"],
       liveUrl: "https://example.com",
       figmaUrl: "https://figma.com"
     },
     {
       id: 2,
-      title: "E-commerce Platform",
-      category: "Full Stack",
-      description: "Complete ecommerce solution with shopping cart, user authentication, payment gateway integration, and admin dashboard for inventory management.",
-      image: "/images/project2.png",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4", // Replace with your video
-      tech: ["React", "Node.js", "MongoDB", "Stripe"],
+      title: "Cake & pastry UI Design",
+      category: "UI&UX",
+      description: "A modern cake and pastry website featuring a clean design that showcases menus, flavors, and custom orders. Built to look great on all devices.",
+      image: "/images/cake.png",
+      video: "/videos/cake.mp4", // Replace with your video
+      tech: ["Figma"],
       liveUrl: "https://example.com"
     },
     {
       id: 3,
-      title: "Analytics Dashboard",
-      category: "UI/UX Design",
-      description: "Real-time analytics dashboard with interactive charts, data visualization, and comprehensive reporting features for business intelligence.",
-      image: "/images/project3.png",
-      video: "/videos/project3.mp4", // Replace with your video
-      tech: ["React", "D3.js", "Firebase"],
+      title: "Coffee Shop Website",
+      category: "Web developed",
+      description: "A modern coffee shop website with a clean design that highlights your menu, brand story, and café ambiance. Built to look great on all devices and attract coffee lovers.",
+      image: "/images/coffe.png",
+      video: "/videos/coffe.mp4", // Replace with your video
+      tech: ["React", "vite", ],
       liveUrl: "https://example.com"
     },
     {
       id: 4,
-      title: "Mobile App UI Design",
+      title: "Hushh Wallet",
       category: "UI/UX Design",
       description: "High-fidelity mobile application design with intuitive user flows, modern aesthetics, and pixel-perfect interface components.",
-      image: "/images/project4.png",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4", // Replace with your video
+      image: "/images/project2.png",
+      video: "/videos/project3.mp4", // Replace with your video
       tech: ["Figma", "Prototyping", "Design System"],
       figmaUrl: "https://figma.com"
     },
-    {
-      id: 5,
-      title: "Landing Page",
-      category: "Web Design",
-      description: "Conversion-focused landing page for startups with compelling copy, call-to-actions, and seamless user experience to maximize conversions.",
-      image: "/images/project5.png",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4", // Replace with your video
-      tech: ["React", "Tailwind CSS", "SEO"],
-      liveUrl: "https://example.com"
-    }
+    
   ];
 
   return (
