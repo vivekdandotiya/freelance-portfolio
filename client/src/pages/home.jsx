@@ -227,31 +227,26 @@ function TextType({ texts, typingSpeed = 100, deletingSpeed = 50, pauseDuration 
     const currentText = texts[textIndex];
     
     if (!isDeleting && currentIndex < currentText.length) {
-      // Typing
       const timeout = setTimeout(() => {
         setDisplayedText(prev => prev + currentText[currentIndex]);
         setCurrentIndex(prev => prev + 1);
       }, typingSpeed);
       return () => clearTimeout(timeout);
     } else if (!isDeleting && currentIndex === currentText.length) {
-      // Check if we should loop or stop
       if (!loop) {
         setIsComplete(true);
         return;
       }
-      // Pause before deleting
       const timeout = setTimeout(() => {
         setIsDeleting(true);
       }, pauseDuration);
       return () => clearTimeout(timeout);
     } else if (isDeleting && displayedText.length > 0) {
-      // Deleting
       const timeout = setTimeout(() => {
         setDisplayedText(prev => prev.slice(0, -1));
       }, deletingSpeed);
       return () => clearTimeout(timeout);
     } else if (isDeleting && displayedText.length === 0) {
-      // Move to next text
       setIsDeleting(false);
       setCurrentIndex(0);
       setTextIndex((prev) => (prev + 1) % texts.length);
@@ -414,7 +409,6 @@ function Navbar() {
             <span className="logo" style={{ fontSize: '1.5rem', display: window.innerWidth < 640 ? 'none' : 'inline' }}>VH Design</span>
           </div>
 
-          {/* Desktop Navigation */}
           <div style={{ display: window.innerWidth < 768 ? 'none' : 'flex', alignItems: 'center', gap: '3rem', marginLeft: '3rem' }}>
             <a href="/" className="nav-link" style={{ fontSize: '0.875rem', fontWeight: 500, color: 'white', textDecoration: 'none' }}>
               Home
@@ -431,20 +425,17 @@ function Navbar() {
             <a href="/reviews" className="nav-link" style={{ fontSize: '0.875rem', fontWeight: 500, color: 'white', textDecoration: 'none' }}>
               Record's
             </a>
-            
           </div>
 
-          {/* Right - CTA Buttons */}
           <div style={{ display: window.innerWidth < 768 ? 'none' : 'flex', alignItems: 'center', gap: '1rem', marginLeft: 'auto' }}>
             <a href="/contact" className="cta-button" style={{ padding: '0.5rem 1.5rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 500, color: 'white', border: '1px solid rgba(255, 255, 255, 0.3)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               Contact
             </a>
             <a href="/signup" className="cta-button" style={{ padding: '0.5rem 1.5rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 500, color: 'black', background: 'linear-gradient(90deg, #ffffff, #e5e5e5)', boxShadow: '0 4px 6px rgba(255, 255, 255, 0.3)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              Get Started
+              LogOut
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
           <div style={{ display: window.innerWidth < 768 ? 'block' : 'none', marginLeft: 'auto' }}>
             <div className={`hamburger ${isOpen ? "active" : ""}`} onClick={() => setIsOpen(!isOpen)}>
               <span></span>
@@ -454,14 +445,12 @@ function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isOpen && (
           <div className="mobile-menu" style={{ display: window.innerWidth < 768 ? 'block' : 'none', background: 'rgba(0, 0, 0, 0.95)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
             <div style={{ padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <a href="/" onClick={() => setIsOpen(false)} style={{ fontSize: '0.875rem', fontWeight: 500, color: 'white', textDecoration: 'none' }}>
                 Home
               </a>
-              
               <a href="/services" onClick={() => setIsOpen(false)} style={{ fontSize: '0.875rem', fontWeight: 500, color: '#d1d5db', textDecoration: 'none' }}>
                 Services
               </a>
@@ -486,80 +475,118 @@ function Navbar() {
   );
 }
 
-// ==================== ANIMATED TEXT LINE ====================
-function AnimatedTextLine({ text, baseDelay = 0 }) {
-  return (
-    <span style={{ display: "block", whiteSpace: "nowrap" }}>
-      {text.split("").map((char, index) => (
-        <span
-          key={index}
-          style={{
-            display: "inline-block",
-            opacity: 0,
-            transform: "translateY(18px)",
-            animation: `titleFadeUp 0.55s forwards cubic-bezier(0.22, 0.61, 0.36, 1)`,
-            animationDelay: `${baseDelay + index * 0.04}s`,
-          }}
-        >
-          {char === " " ? "\u00A0" : char}
-        </span>
-      ))}
-    </span>
-  )
-}
-
 // ==================== DESIGNER LOGO ====================
 function DesignerLogo() {
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    setRotateY((x - centerX) / 10);
+    setRotateX((centerY - y) / 10);
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+  };
+
   return (
     <div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{
         position: "relative",
-        width: "200px",
-        height: "200px",
+        width: "280px",
+        height: "280px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        perspective: "1000px",
       }}
     >
-      {/* Center core logo */}
+      {[0, 1, 2].map((i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            width: `${220 + i * 30}px`,
+            height: `${220 + i * 30}px`,
+            borderRadius: "50%",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+            animation: `orbit ${20 + i * 5}s linear infinite ${i % 2 === 0 ? 'normal' : 'reverse'}`,
+            opacity: 0.6 - i * 0.15,
+          }}
+        />
+      ))}
+
       <div
         style={{
           position: "absolute",
-          width: "100%",
-          height: "100%",
+          width: "220px",
+          height: "220px",
           borderRadius: "50%",
-          background: "radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.3), rgba(200, 200, 200, 0.1), rgba(30, 30, 30, 0.8))",
-          border: "2px solid rgba(255, 255, 255, 0.5)",
-          boxShadow: "0 0 60px rgba(255, 255, 255, 0.4)",
+          background: "radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.4), rgba(200, 200, 200, 0.2), rgba(30, 30, 30, 0.9))",
+          border: "2px solid rgba(255, 255, 255, 0.6)",
+          boxShadow: "0 0 80px rgba(255, 255, 255, 0.5), inset 0 0 40px rgba(255, 255, 255, 0.1)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
           zIndex: 10,
-          backdropFilter: "blur(10px)",
+          backdropFilter: "blur(20px)",
+          transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+          transition: "transform 0.3s ease-out",
+          animation: "float 6s ease-in-out infinite",
         }}
       >
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              width: "4px",
+              height: "4px",
+              borderRadius: "50%",
+              background: "rgba(255, 255, 255, 0.8)",
+              boxShadow: "0 0 10px rgba(255, 255, 255, 0.8)",
+              top: "50%",
+              left: "50%",
+              animation: `particle ${3 + i * 0.3}s ease-in-out infinite`,
+              animationDelay: `${i * 0.2}s`,
+            }}
+          />
+        ))}
+
         <div
           style={{
-            fontSize: "2.5rem",
+            fontSize: "3.5rem",
             fontWeight: 900,
             letterSpacing: "0.05em",
             background: "linear-gradient(135deg, #ffffff, #e5e5e5, #ffffff)",
+            backgroundSize: "200% 200%",
+            animation: "gradientShift 3s ease infinite",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            filter: "drop-shadow(0 0 10px rgba(255, 255, 255, 0.4))",
+            filter: "drop-shadow(0 0 15px rgba(255, 255, 255, 0.5))",
           }}
         >
           ✦
         </div>
         <div
           style={{
-            marginTop: "0.4rem",
-            fontSize: "0.7rem",
+            marginTop: "0.6rem",
+            fontSize: "0.8rem",
             fontWeight: 600,
             textTransform: "uppercase",
-            letterSpacing: "0.18em",
-            color: "#c0c0c0",
+            letterSpacing: "0.25em",
+            color: "#e5e5e5",
+            textShadow: "0 0 10px rgba(255, 255, 255, 0.5)",
           }}
         >
           Designer
@@ -573,73 +600,153 @@ function DesignerLogo() {
 function ProjectCard({ project, index }) {
   const [hovered, setHovered] = useState(false)
   const [startTyping, setStartTyping] = useState(false)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    // Delay typing based on card index
     const timer = setTimeout(() => {
       setStartTyping(true)
-    }, index * 500) // 500ms delay between each card
+    }, index * 500)
     return () => clearTimeout(timer)
   }, [index])
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMouseMove}
       style={{
-        background: "rgba(20, 20, 20, 0.7)",
-        borderRadius: "16px",
+        position: "relative",
+        background: "rgba(20, 20, 20, 0.8)",
+        borderRadius: "20px",
         overflow: "hidden",
         border: "1px solid rgba(255, 255, 255, 0.2)",
-        backdropFilter: "blur(10px)",
-        transition: "all 0.3s ease",
-        transform: hovered ? "translateY(-8px)" : "translateY(0)",
-        boxShadow: hovered ? "0 20px 40px rgba(255, 255, 255, 0.2)" : "0 4px 12px rgba(0, 0, 0, 0.3)",
+        backdropFilter: "blur(15px)",
+        transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+        transform: hovered ? "translateY(-12px) scale(1.02)" : "translateY(0) scale(1)",
+        boxShadow: hovered 
+          ? "0 30px 60px rgba(255, 255, 255, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.3)" 
+          : "0 8px 20px rgba(0, 0, 0, 0.4)",
       }}
     >
+      {hovered && (
+        <div
+          style={{
+            position: "absolute",
+            top: mousePos.y - 150,
+            left: mousePos.x - 150,
+            width: "300px",
+            height: "300px",
+            background: "radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%)",
+            pointerEvents: "none",
+            transition: "all 0.1s ease",
+            zIndex: 1,
+          }}
+        />
+      )}
+
       <div
         style={{
-          height: "200px",
-          background: `linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(200, 200, 200, 0.1))`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "3rem",
+          position: "absolute",
+          inset: "-2px",
+          background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
+          backgroundSize: "200% 100%",
+          animation: hovered ? "shimmer 2s linear infinite" : "none",
+          borderRadius: "20px",
+          opacity: hovered ? 1 : 0,
+          transition: "opacity 0.3s ease",
+          zIndex: 0,
         }}
-      >
-        📱
-      </div>
-      <div style={{ padding: "1.5rem" }}>
-        <h3 style={{ fontSize: "1.3rem", fontWeight: 700, marginBottom: "0.5rem", color: "#ffffff", minHeight: "2rem" }}>
-          {startTyping ? (
-            <TextType 
-              texts={[project.title]} 
-              typingSpeed={60}
-              deletingSpeed={0}
-              pauseDuration={5000}
-              loop={false}
-            />
-          ) : (
-            <span style={{ opacity: 0 }}>{project.title}</span>
-          )}
-        </h3>
-        <p style={{ fontSize: "0.9rem", color: "#c0c0c0", marginBottom: "1rem" }}>{project.description}</p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-          {project.tags.map((tag, i) => (
-            <span
-              key={i}
-              style={{
-                fontSize: "0.75rem",
-                padding: "0.3rem 0.8rem",
-                borderRadius: "9999px",
-                background: "rgba(255, 255, 255, 0.1)",
-                border: "1px solid rgba(255, 255, 255, 0.3)",
-                color: "#e5e5e5",
-              }}
-            >
-              {tag}
-            </span>
-          ))}
+      />
+
+      <div style={{ position: "relative", zIndex: 2 }}>
+        <div
+          style={{
+            height: "220px",
+            background: `linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(200, 200, 200, 0.1))`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "4rem",
+            position: "relative",
+            overflow: "hidden",
+            transition: "transform 0.4s ease",
+            transform: hovered ? "scale(1.1)" : "scale(1)",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              width: "150%",
+              height: "150%",
+              background: "radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%)",
+              animation: "pulse 3s ease-in-out infinite",
+              top: "-25%",
+              left: "-25%",
+            }}
+          />
+          <span style={{ position: "relative", zIndex: 1, filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))" }}>
+            📱
+          </span>
+        </div>
+
+        <div style={{ padding: "2rem" }}>
+          <h3 style={{ 
+            fontSize: "1.5rem", 
+            fontWeight: 700, 
+            marginBottom: "0.8rem", 
+            color: "#ffffff", 
+            minHeight: "2.5rem",
+            textShadow: hovered ? "0 0 20px rgba(255, 255, 255, 0.5)" : "none",
+            transition: "text-shadow 0.3s ease"
+          }}>
+            {startTyping ? (
+              <TextType 
+                texts={[project.title]} 
+                typingSpeed={60}
+                deletingSpeed={0}
+                pauseDuration={5000}
+                loop={false}
+              />
+            ) : (
+              <span style={{ opacity: 0 }}>{project.title}</span>
+            )}
+          </h3>
+          <p style={{ 
+            fontSize: "0.95rem", 
+            color: "#c0c0c0", 
+            marginBottom: "1.5rem",
+            lineHeight: 1.6
+          }}>
+            {project.description}
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem" }}>
+            {project.tags.map((tag, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: "0.8rem",
+                  padding: "0.4rem 1rem",
+                  borderRadius: "9999px",
+                  background: hovered ? "rgba(255, 255, 255, 0.15)" : "rgba(255, 255, 255, 0.1)",
+                  border: "1px solid rgba(255, 255, 255, 0.3)",
+                  color: "#e5e5e5",
+                  transition: "all 0.3s ease",
+                  transform: hovered ? "translateY(-2px)" : "translateY(0)",
+                  boxShadow: hovered ? "0 4px 8px rgba(255, 255, 255, 0.2)" : "none",
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -709,6 +816,419 @@ function ProjectGallery() {
   )
 }
 
+// ==================== FEATURED PROJECTS ====================
+function FeaturedProjects() {
+  const projects = [
+    {
+      id: 1,
+      title: "E-Commerce Platform",
+      description: "A full-featured online shopping platform with secure payment integration, real-time inventory management, and personalized recommendations. Built with modern web technologies for optimal performance.",
+      tech: ["React", "Node.js", "MongoDB", "Stripe"],
+      color: "rgba(255, 100, 100, 0.15)",
+      emoji: "🛍️",
+      gradient: "linear-gradient(135deg, rgba(255, 100, 100, 0.2), rgba(255, 50, 50, 0.1))"
+    },
+    {
+      id: 2,
+      title: "Task Management System",
+      description: "Collaborative project management tool with real-time updates, team workspaces, drag-and-drop interface, and advanced analytics. Perfect for remote teams and agile workflows.",
+      tech: ["React", "Firebase", "Tailwind CSS"],
+      color: "rgba(100, 200, 255, 0.15)",
+      emoji: "✅",
+      gradient: "linear-gradient(135deg, rgba(100, 200, 255, 0.2), rgba(50, 150, 255, 0.1))"
+    },
+    {
+      id: 3,
+      title: "Social Media Dashboard",
+      description: "Comprehensive analytics platform for social media management with AI-powered insights, automated reporting, and multi-platform integration for better decision making.",
+      tech: ["React", "D3.js", "Express", "PostgreSQL"],
+      color: "rgba(150, 100, 255, 0.15)",
+      emoji: "📊",
+      gradient: "linear-gradient(135deg, rgba(150, 100, 255, 0.2), rgba(100, 50, 255, 0.1))"
+    },
+    {
+      id: 4,
+      title: "Portfolio Builder",
+      description: "Intuitive drag-and-drop website builder with beautiful templates, custom domain support, and one-click deployment. Perfect for creatives and professionals.",
+      tech: ["React", "Next.js", "Tailwind CSS"],
+      color: "rgba(100, 255, 150, 0.15)",
+      emoji: "💼",
+      gradient: "linear-gradient(135deg, rgba(100, 255, 150, 0.2), rgba(50, 255, 100, 0.1))"
+    }
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [direction, setDirection] = useState('next');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleNext = () => {
+    setDirection('next');
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % projects.length);
+      setIsAnimating(false);
+    }, 600);
+  };
+
+  const handlePrev = () => {
+    setDirection('prev');
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
+      setIsAnimating(false);
+    }, 600);
+  };
+
+  return (
+    <section style={{ 
+      padding: "120px 24px", 
+      maxWidth: "1400px", 
+      margin: "0 auto",
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      position: "relative"
+    }}>
+      <div style={{
+        position: "absolute",
+        top: "20%",
+        left: "10%",
+        width: "300px",
+        height: "300px",
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%)",
+        filter: "blur(60px)",
+        animation: "float 8s ease-in-out infinite",
+      }} />
+      <div style={{
+        position: "absolute",
+        bottom: "20%",
+        right: "10%",
+        width: "400px",
+        height: "400px",
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%)",
+        filter: "blur(80px)",
+        animation: "float 10s ease-in-out infinite reverse",
+      }} />
+
+      <div style={{ 
+        display: "grid", 
+        gridTemplateColumns: window.innerWidth < 1024 ? "1fr" : "1fr 1fr", 
+        gap: "6rem", 
+        alignItems: "center",
+        width: "100%",
+        position: "relative",
+        zIndex: 2
+      }}>
+        <div style={{ position: "relative", zIndex: 10 }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            marginBottom: "2rem"
+          }}>
+            <div style={{
+              width: "60px",
+              height: "4px",
+              background: "linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent)",
+              borderRadius: "2px"
+            }} />
+            <p style={{
+              fontSize: "0.9rem",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "#9ca3af",
+              opacity: isAnimating ? 0 : 1,
+              transition: "opacity 0.3s ease"
+            }}>
+              Featured Project {currentIndex + 1} / {projects.length}
+            </p>
+          </div>
+
+          <h2
+            style={{
+              fontSize: "3.5rem",
+              fontWeight: 900,
+              marginBottom: "2rem",
+              color: "#ffffff",
+              opacity: isAnimating ? 0 : 1,
+              transform: isAnimating 
+                ? (direction === 'next' ? "translateX(-30px)" : "translateX(30px)") 
+                : "translateX(0)",
+              transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              lineHeight: 1.2,
+              textShadow: "0 0 40px rgba(255, 255, 255, 0.1)",
+            }}
+          >
+            {projects[currentIndex].title}
+          </h2>
+
+          <p
+            style={{
+              fontSize: "1.1rem",
+              color: "#c0c0c0",
+              marginBottom: "3rem",
+              lineHeight: 1.9,
+              opacity: isAnimating ? 0 : 1,
+              transform: isAnimating 
+                ? (direction === 'next' ? "translateX(-30px)" : "translateX(30px)") 
+                : "translateX(0)",
+              transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s",
+            }}
+          >
+            {projects[currentIndex].description}
+          </p>
+
+          <div style={{ 
+            display: "flex", 
+            flexWrap: "wrap", 
+            gap: "0.8rem",
+            marginBottom: "3rem",
+            opacity: isAnimating ? 0 : 1,
+            transform: isAnimating 
+              ? (direction === 'next' ? "translateX(-30px)" : "translateX(30px)") 
+              : "translateX(0)",
+            transition: "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s",
+          }}>
+            {projects[currentIndex].tech.map((tech, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: "0.95rem",
+                  padding: "0.7rem 1.4rem",
+                  borderRadius: "9999px",
+                  background: "rgba(255, 255, 255, 0.12)",
+                  border: "1px solid rgba(255, 255, 255, 0.3)",
+                  color: "#e5e5e5",
+                  fontWeight: 600,
+                  backdropFilter: "blur(10px)",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)"
+                }}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+            <button
+              onClick={handlePrev}
+              style={{
+                padding: "1rem 1.8rem",
+                borderRadius: "9999px",
+                background: "rgba(255, 255, 255, 0.1)",
+                border: "2px solid rgba(255, 255, 255, 0.3)",
+                color: "#ffffff",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                fontSize: "1rem",
+                fontWeight: 600,
+                backdropFilter: "blur(10px)"
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = "rgba(255, 255, 255, 0.2)";
+                e.target.style.transform = "translateX(-4px)";
+                e.target.style.borderColor = "rgba(255, 255, 255, 0.5)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = "rgba(255, 255, 255, 0.1)";
+                e.target.style.transform = "translateX(0)";
+                e.target.style.borderColor = "rgba(255, 255, 255, 0.3)";
+              }}
+            >
+              ← Previous
+            </button>
+            <button
+              onClick={handleNext}
+              style={{
+                padding: "1rem 1.8rem",
+                borderRadius: "9999px",
+                background: "linear-gradient(135deg, #ffffff, #e5e5e5)",
+                border: "none",
+                color: "#000000",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                fontSize: "1rem",
+                fontWeight: 600,
+                boxShadow: "0 8px 24px rgba(255, 255, 255, 0.3)"
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = "translateX(4px) scale(1.05)";
+                e.target.style.boxShadow = "0 12px 32px rgba(255, 255, 255, 0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "translateX(0) scale(1)";
+                e.target.style.boxShadow = "0 8px 24px rgba(255, 255, 255, 0.3)";
+              }}
+            >
+              Next →
+            </button>
+
+            <div style={{ display: "flex", gap: "0.6rem", marginLeft: "1rem" }}>
+              {projects.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setDirection(idx > currentIndex ? 'next' : 'prev');
+                    setIsAnimating(true);
+                    setTimeout(() => {
+                      setCurrentIndex(idx);
+                      setIsAnimating(false);
+                    }, 600);
+                  }}
+                  style={{
+                    width: idx === currentIndex ? "32px" : "10px",
+                    height: "10px",
+                    borderRadius: "5px",
+                    background: idx === currentIndex 
+                      ? "linear-gradient(90deg, #ffffff, #e5e5e5)" 
+                      : "rgba(255, 255, 255, 0.3)",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    boxShadow: idx === currentIndex ? "0 0 12px rgba(255, 255, 255, 0.6)" : "none"
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ 
+          position: "relative", 
+          height: "650px",
+          perspective: "1500px",
+          display: window.innerWidth < 1024 ? "none" : "block"
+        }}>
+          {projects.map((project, index) => {
+            const offset = (index - currentIndex + projects.length) % projects.length;
+            
+            return (
+              <div
+                key={project.id}
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  width: "480px",
+                  height: "600px",
+                  background: `linear-gradient(135deg, ${project.color}, rgba(20, 20, 20, 0.95))`,
+                  borderRadius: "28px",
+                  border: "2px solid rgba(255, 255, 255, 0.2)",
+                  boxShadow: offset === 0 
+                    ? "0 40px 100px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1)" 
+                    : "0 15px 50px rgba(0, 0, 0, 0.5)",
+                  transform: `
+                    translate(-50%, -50%) 
+                    translateX(${offset * 45}px) 
+                    translateY(${offset * -45}px) 
+                    translateZ(${-offset * 180}px)
+                    rotateY(${offset * 10}deg)
+                    scale(${1 - offset * 0.1})
+                  `,
+                  zIndex: projects.length - offset,
+                  transition: "all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  transformStyle: "preserve-3d",
+                  backdropFilter: "blur(20px)",
+                  overflow: "hidden",
+                  opacity: offset > 2 ? 0 : 1,
+                  pointerEvents: offset === 0 ? "auto" : "none",
+                }}
+              >
+                <div style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: project.gradient,
+                  opacity: offset === 0 ? 1 : 0.5,
+                  transition: "opacity 0.6s ease"
+                }} />
+
+                <div
+                  style={{
+                    width: "100%",
+                    height: "65%",
+                    background: `linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(200, 200, 200, 0.15))`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "9rem",
+                    borderBottom: "1px solid rgba(255, 255, 255, 0.15)",
+                    position: "relative",
+                    overflow: "hidden"
+                  }}
+                >
+                  {[...Array(6)].map((_, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        position: "absolute",
+                        width: `${8 + i * 3}px`,
+                        height: `${8 + i * 3}px`,
+                        borderRadius: "50%",
+                        background: "rgba(255, 255, 255, 0.3)",
+                        boxShadow: "0 0 20px rgba(255, 255, 255, 0.5)",
+                        animation: `particle ${4 + i * 0.5}s ease-in-out infinite`,
+                        animationDelay: `${i * 0.3}s`,
+                        left: `${20 + i * 10}%`,
+                        top: `${30 + i * 5}%`,
+                      }}
+                    />
+                  ))}
+
+                  <div style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: `radial-gradient(circle at 35% 35%, ${project.color}, transparent 70%)`,
+                    opacity: 0.7
+                  }} />
+                  <span style={{ 
+                    position: "relative", 
+                    zIndex: 1,
+                    filter: "drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4))",
+                    animation: offset === 0 ? "float 4s ease-in-out infinite" : "none"
+                  }}>
+                    {project.emoji}
+                  </span>
+                </div>
+
+                <div style={{ padding: "2.5rem", position: "relative", zIndex: 2 }}>
+                  <h3 style={{ 
+                    fontSize: "2rem", 
+                    fontWeight: 800, 
+                    color: "#ffffff", 
+                    marginBottom: "1rem",
+                    lineHeight: 1.2,
+                    textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)"
+                  }}>
+                    {project.title}
+                  </h3>
+                  <p style={{ 
+                    fontSize: "1rem", 
+                    color: "#d0d0d0", 
+                    lineHeight: 1.6,
+                    textShadow: "0 1px 4px rgba(0, 0, 0, 0.5)"
+                  }}>
+                    {project.description.slice(0, 90)}...
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ==================== MAIN HOME COMPONENT ====================
 export default function Home() {
   return (
@@ -723,7 +1243,6 @@ export default function Home() {
     >
       <style>{keyframesCSS}</style>
 
-      {/* Animated Background */}
       <div style={{ 
         position: "fixed", 
         top: 0, 
@@ -741,25 +1260,22 @@ export default function Home() {
         />
       </div>
 
-      {/* Navbar */}
       <Navbar />
 
-      {/* Main content */}
       <div
         style={{
           position: "relative",
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: window.innerWidth < 1024 ? "1fr" : "1fr 1fr",
           gap: "4rem",
           zIndex: 5,
-          maxWidth: "1120px",
+          maxWidth: "1200px",
           margin: "0 auto",
-          minHeight: "80vh",
+          minHeight: "90vh",
           alignItems: "center",
           padding: "4rem 6vw",
         }}
       >
-        {/* Left content */}
         <section style={{ position: "relative", zIndex: 10 }}>
           <p
             style={{
@@ -784,20 +1300,18 @@ export default function Home() {
               lineHeight: 1.4,
               marginBottom: "1.5rem",
               minHeight: "180px",
-              
             }}
           >
             <TextType 
-  texts={[
-    "Designing & building websites.",
-    "Creating amazing user experiences.",
-    "Developing modern web pages."
-  ]}
-  typingSpeed={80}
-  deletingSpeed={40}
-  pauseDuration={2000}
-/>
-
+              texts={[
+                "Designing & building websites.",
+                "Creating amazing user experiences.",
+                "Developing modern web pages."
+              ]}
+              typingSpeed={80}
+              deletingSpeed={40}
+              pauseDuration={2000}
+            />
           </h1>
 
           <p
@@ -813,7 +1327,7 @@ export default function Home() {
               animationDelay: "1s",
             }}
           >
-            From Figma design to live React & Node.js deployment. Hire me for landing pages, dashboards and custom web
+            From Figma design to live React & Node.js deployment. Custom web
             apps that convert visitors into clients.
           </p>
 
@@ -832,39 +1346,64 @@ export default function Home() {
             <a
               href="#projects"
               style={{
-                padding: "0.8rem 1.6rem",
+                padding: "1rem 2rem",
                 borderRadius: "9999px",
-                fontSize: "0.95rem",
-                fontWeight: 500,
+                fontSize: "1rem",
+                fontWeight: 600,
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: "0.5rem",
+                gap: "0.6rem",
                 cursor: "pointer",
                 background: "linear-gradient(135deg, #ffffff, #e5e5e5)",
                 color: "black",
-                boxShadow: "0 18px 40px rgba(255, 255, 255, 0.3)",
-                transition: "all 0.3s ease",
+                boxShadow: "0 20px 50px rgba(255, 255, 255, 0.35)",
+                transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                position: "relative",
+                overflow: "hidden",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = "translateY(-4px) scale(1.05)";
+                e.target.style.boxShadow = "0 25px 60px rgba(255, 255, 255, 0.5)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "translateY(0) scale(1)";
+                e.target.style.boxShadow = "0 20px 50px rgba(255, 255, 255, 0.35)";
               }}
             >
-              View Projects →
+              <span>View Projects</span>
+              <span style={{ fontSize: "1.2rem", transition: "transform 0.3s ease" }}>→</span>
             </a>
             <a
               href="#contact"
               style={{
-                padding: "0.8rem 1.6rem",
+                padding: "1rem 2rem",
                 borderRadius: "9999px",
-                fontSize: "0.95rem",
-                fontWeight: 500,
+                fontSize: "1rem",
+                fontWeight: 600,
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
                 cursor: "pointer",
-                border: "1px solid rgba(255, 255, 255, 0.4)",
+                border: "2px solid rgba(255, 255, 255, 0.5)",
                 color: "#e5e7eb",
-                background: "rgba(20, 20, 20, 0.5)",
-                backdropFilter: "blur(10px)",
-                transition: "all 0.3s ease",
+                background: "rgba(20, 20, 20, 0.6)",
+                backdropFilter: "blur(15px)",
+                transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                position: "relative",
+                overflow: "hidden",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = "translateY(-4px)";
+                e.target.style.background = "rgba(255, 255, 255, 0.1)";
+                e.target.style.borderColor = "rgba(255, 255, 255, 0.8)";
+                e.target.style.boxShadow = "0 20px 40px rgba(255, 255, 255, 0.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "translateY(0)";
+                e.target.style.background = "rgba(20, 20, 20, 0.6)";
+                e.target.style.borderColor = "rgba(255, 255, 255, 0.5)";
+                e.target.style.boxShadow = "none";
               }}
             >
               Hire Me
@@ -901,10 +1440,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Right side - Animated logo */}
         <aside
           style={{
-            display: "flex",
+            display: window.innerWidth < 1024 ? "none" : "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
@@ -919,317 +1457,60 @@ export default function Home() {
           <DesignerLogo />
           <p
             style={{
-              marginTop: "1.5rem",
-              fontSize: "0.85rem",
+              marginTop: "2rem",
+              fontSize: "0.9rem",
               color: "#9ca3af",
               textAlign: "center",
+              maxWidth: "280px",
+              lineHeight: 1.6
             }}
           >
-            Available for <span style={{ color: "#e5e5e5" }}>freelance projects & internships</span>.
+            Available for <span style={{ color: "#e5e5e5", fontWeight: 600 }}>freelance projects & internships</span>.
           </p>
+          
+          <div
+            style={{
+              marginTop: "3rem",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "0.5rem",
+              animation: "float 3s ease-in-out infinite",
+            }}
+          >
+            <span style={{ fontSize: "0.75rem", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              Scroll
+            </span>
+            <div
+              style={{
+                width: "1px",
+                height: "50px",
+                background: "linear-gradient(to bottom, rgba(255, 255, 255, 0.5), transparent)",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: "-3px",
+                  width: "7px",
+                  height: "7px",
+                  borderRadius: "50%",
+                  background: "white",
+                  boxShadow: "0 0 10px rgba(255, 255, 255, 0.8)",
+                  animation: "scrollDot 2s ease-in-out infinite",
+                }}
+              />
+            </div>
+          </div>
         </aside>
       </div>
 
-      {/* Featured Projects Section */}
       <FeaturedProjects />
+      <ProjectGallery />
     </div>
   )
-}
-
-// ==================== FEATURED PROJECTS ====================
-function FeaturedProjects() {
-  const projects = [
-    {
-      id: 1,
-      title: "E-Commerce Platform",
-      description: "A full-featured online shopping platform with secure payment integration, real-time inventory management, and personalized recommendations. Built with modern web technologies for optimal performance.",
-      tech: ["React", "Node.js", "MongoDB", "Stripe"],
-      color: "rgba(255, 100, 100, 0.15)",
-      emoji: "🛍️"
-    },
-    {
-      id: 2,
-      title: "Task Management System",
-      description: "Collaborative project management tool with real-time updates, team workspaces, drag-and-drop interface, and advanced analytics. Perfect for remote teams and agile workflows.",
-      tech: ["React", "Firebase", "Tailwind CSS"],
-      color: "rgba(100, 200, 255, 0.15)",
-      emoji: "✅"
-    },
-    {
-      id: 3,
-      title: "Social Media Dashboard",
-      description: "Comprehensive analytics platform for social media management with AI-powered insights, automated reporting, and multi-platform integration for better decision making.",
-      tech: ["React", "D3.js", "Express", "PostgreSQL"],
-      color: "rgba(150, 100, 255, 0.15)",
-      emoji: "📊"
-    },
-    {
-      id: 4,
-      title: "Portfolio Builder",
-      description: "Intuitive drag-and-drop website builder with beautiful templates, custom domain support, and one-click deployment. Perfect for creatives and professionals.",
-      tech: ["React", "Next.js", "Tailwind CSS"],
-      color: "rgba(100, 255, 150, 0.15)",
-      emoji: "💼"
-    }
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % projects.length);
-        setIsAnimating(false);
-      }, 600);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [projects.length]);
-
-  return (
-    <section style={{ 
-      padding: "120px 24px", 
-      maxWidth: "1400px", 
-      margin: "0 auto",
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center"
-    }}>
-      <div style={{ 
-        display: "grid", 
-        gridTemplateColumns: "1fr 1fr", 
-        gap: "6rem", 
-        alignItems: "center",
-        width: "100%"
-      }}>
-        {/* Left Side - Project Info */}
-        <div style={{ position: "relative", zIndex: 10 }}>
-          <p style={{
-            fontSize: "0.9rem",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "#9ca3af",
-            marginBottom: "1rem",
-            opacity: isAnimating ? 0 : 1,
-            transition: "opacity 0.3s ease"
-          }}>
-            Featured Project {currentIndex + 1} / {projects.length}
-          </p>
-
-          <h2
-            style={{
-              fontSize: "3rem",
-              fontWeight: 800,
-              marginBottom: "1.5rem",
-              color: "#ffffff",
-              opacity: isAnimating ? 0 : 1,
-              transform: isAnimating ? "translateY(20px)" : "translateY(0)",
-              transition: "all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
-              lineHeight: 1.2
-            }}
-          >
-            {projects[currentIndex].title}
-          </h2>
-
-          <p
-            style={{
-              fontSize: "1.1rem",
-              color: "#c0c0c0",
-              marginBottom: "2.5rem",
-              lineHeight: 1.8,
-              opacity: isAnimating ? 0 : 1,
-              transform: isAnimating ? "translateY(20px)" : "translateY(0)",
-              transition: "all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s",
-            }}
-          >
-            {projects[currentIndex].description}
-          </p>
-
-          <div style={{ 
-            display: "flex", 
-            flexWrap: "wrap", 
-            gap: "0.75rem",
-            marginBottom: "2rem",
-            opacity: isAnimating ? 0 : 1,
-            transform: isAnimating ? "translateY(20px)" : "translateY(0)",
-            transition: "all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s",
-          }}>
-            {projects[currentIndex].tech.map((tech, i) => (
-              <span
-                key={i}
-                style={{
-                  fontSize: "0.9rem",
-                  padding: "0.6rem 1.2rem",
-                  borderRadius: "9999px",
-                  background: "rgba(255, 255, 255, 0.1)",
-                  border: "1px solid rgba(255, 255, 255, 0.3)",
-                  color: "#e5e5e5",
-                  fontWeight: 500
-                }}
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <button
-              onClick={() => {
-                setIsAnimating(true);
-                setTimeout(() => {
-                  setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
-                  setIsAnimating(false);
-                }, 600);
-              }}
-              style={{
-                padding: "0.8rem 1.5rem",
-                borderRadius: "9999px",
-                background: "rgba(255, 255, 255, 0.1)",
-                border: "1px solid rgba(255, 255, 255, 0.3)",
-                color: "#ffffff",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                fontSize: "0.9rem",
-                fontWeight: 500
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = "rgba(255, 255, 255, 0.2)";
-                e.target.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = "rgba(255, 255, 255, 0.1)";
-                e.target.style.transform = "translateY(0)";
-              }}
-            >
-              ← Previous
-            </button>
-            <button
-              onClick={() => {
-                setIsAnimating(true);
-                setTimeout(() => {
-                  setCurrentIndex((prev) => (prev + 1) % projects.length);
-                  setIsAnimating(false);
-                }, 600);
-              }}
-              style={{
-                padding: "0.8rem 1.5rem",
-                borderRadius: "9999px",
-                background: "linear-gradient(135deg, #ffffff, #e5e5e5)",
-                border: "none",
-                color: "#000000",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                fontSize: "0.9rem",
-                fontWeight: 500
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 10px 30px rgba(255, 255, 255, 0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "none";
-              }}
-            >
-              Next →
-            </button>
-          </div>
-        </div>
-
-        {/* Right Side - Card Stack */}
-        <div style={{ 
-          position: "relative", 
-          height: "600px",
-          perspective: "1500px"
-        }}>
-          {projects.map((project, index) => {
-            const offset = (index - currentIndex + projects.length) % projects.length;
-            
-            return (
-              <div
-                key={project.id}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  width: "450px",
-                  height: "550px",
-                  background: `linear-gradient(135deg, ${project.color}, rgba(20, 20, 20, 0.95))`,
-                  borderRadius: "24px",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  boxShadow: offset === 0 
-                    ? "0 30px 80px rgba(0, 0, 0, 0.6)" 
-                    : "0 10px 40px rgba(0, 0, 0, 0.4)",
-                  transform: `
-                    translate(-50%, -50%) 
-                    translateX(${offset * 40}px) 
-                    translateY(${offset * -40}px) 
-                    translateZ(${-offset * 150}px)
-                    rotateY(${offset * 8}deg)
-                    scale(${1 - offset * 0.08})
-                  `,
-                  zIndex: projects.length - offset,
-                  transition: "all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                  transformStyle: "preserve-3d",
-                  backdropFilter: "blur(10px)",
-                  overflow: "hidden",
-                  opacity: offset > 2 ? 0 : 1,
-                }}
-              >
-                {/* Card Image/Icon Area */}
-                <div
-                  style={{
-                    width: "100%",
-                    height: "65%",
-                    background: `linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(200, 200, 200, 0.1))`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "8rem",
-                    borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    position: "relative",
-                    overflow: "hidden"
-                  }}
-                >
-                  <div style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: `radial-gradient(circle at 30% 30%, ${project.color}, transparent 70%)`,
-                    opacity: 0.5
-                  }} />
-                  <span style={{ position: "relative", zIndex: 1 }}>
-                    {project.emoji}
-                  </span>
-                </div>
-
-                {/* Card Content */}
-                <div style={{ padding: "2rem" }}>
-                  <h3 style={{ 
-                    fontSize: "1.8rem", 
-                    fontWeight: 700, 
-                    color: "#ffffff", 
-                    marginBottom: "0.8rem",
-                    lineHeight: 1.2
-                  }}>
-                    {project.title}
-                  </h3>
-                  <p style={{ 
-                    fontSize: "0.95rem", 
-                    color: "#b0b0b0", 
-                    lineHeight: 1.5 
-                  }}>
-                    {project.description.slice(0, 80)}...
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
 }
 
 // ==================== KEYFRAMES CSS ====================
@@ -1245,5 +1526,55 @@ const keyframesCSS = `
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
+  }
+
+  @keyframes orbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotateX(0) rotateY(0); }
+    50% { transform: translateY(-15px) rotateX(5deg) rotateY(5deg); }
+  }
+
+  @keyframes particle {
+    0% { 
+      transform: translate(-50%, -50%) translateX(0) translateY(0);
+      opacity: 1;
+    }
+    50% { 
+      opacity: 0.8;
+    }
+    100% { 
+      transform: translate(-50%, -50%) translateX(80px) translateY(-80px) scale(0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+
+  @keyframes scrollDot {
+    0% { 
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% { 
+      transform: translateY(40px);
+      opacity: 0;
+    }
   }
 `
