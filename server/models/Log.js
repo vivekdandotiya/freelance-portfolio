@@ -1,22 +1,12 @@
 const mongoose = require("mongoose");
 
-const logSchema = new mongoose.Schema({
-  level: {
-    type: String,
-    enum: ["INFO", "WARN", "ERROR"],
-    required: true,
+const logSchema = new mongoose.Schema(
+  {
+    level: String,
+    message: String,
+    userEmail: String,
   },
-  message: {
-    type: String,
-    required: true,
-  },
-  userEmail: {
-    type: String,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Log", logSchema);

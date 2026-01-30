@@ -16,20 +16,20 @@ router.post("/", async (req, res) => {
 
     res.json({ success: true });
   } catch (error) {
+    console.error("LOG CREATE ERROR:", error);
     res.status(500).json({ error: "Failed to create log" });
   }
 });
 
-// GET LOGS (FOR DASHBOARD)
+// GET LOGS
 router.get("/", async (req, res) => {
   try {
-    console.log("Fetching logs...");
-    const logs = await Log.find();
-    console.log("Logs:", logs);
+    const logs = await Log.find().sort({ createdAt: -1 });
     res.json(logs);
   } catch (error) {
-    console.error("LOG ERROR:", error);
+    console.error("LOG FETCH ERROR:", error);
     res.status(500).json({ error: "Failed to fetch logs" });
   }
 });
-module.exports = router;   // ✅ VERY IMPORTANT
+
+module.exports = router;
